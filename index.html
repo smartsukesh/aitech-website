@@ -3,46 +3,506 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="description"
+        content="An early-stage project exploring better prompts, LLM workflows, and AI-generated artwork.">
+
   <title>Prompt & AI Art Studio</title>
+
   <style>
+    :root {
+      --background: #10100f;
+      --surface: #1b1b19;
+      --text: #f7f4ed;
+      --muted: #b7b4ac;
+      --accent: #ff792e;
+      --border: #393832;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 720px;
-      margin: 60px auto;
-      padding: 0 20px;
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
       line-height: 1.6;
     }
-    a { color: #2158a8; }
+
+    a { color: inherit; }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      min-height: 76px;
+    }
+
+    .brand {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      text-decoration: none;
+    }
+
+    .brand span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .nav-links a,
+    .footer-links a {
+      color: var(--muted);
+      font-size: .9rem;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover,
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
+
+    h1 {
+      margin: 18px 0 22px;
+      font-size: clamp(2.8rem, 6.5vw, 5.6rem);
+    }
+
+    h2 {
+      margin: 12px 0 18px;
+      font-size: clamp(2rem, 4vw, 3.3rem);
+    }
+
+    h3 {
+      margin: 15px 0 10px;
+      font-size: 1.25rem;
+    }
+
+    p { margin-top: 0; }
+
+    .lead {
+      max-width: 590px;
+      color: var(--muted);
+      font-size: 1.12rem;
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 46px;
+      padding: 11px 20px;
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      background: var(--accent);
+      color: #17110d;
+      font-size: .92rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .button:hover {
+      background: #ff985e;
+      transform: translateY(-2px);
+    }
+
+    .button.outline {
+      border-color: #77726b;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .button.outline:hover {
+      border-color: var(--accent);
+      background: #272019;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 58px;
+      padding-block: 100px 110px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .status {
+      margin-top: 27px;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .status::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Decorative concept graphic, not a screenshot of a working app */
+    .visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 440px;
+      overflow: hidden;
+      border: 1px solid #4a372c;
+      background:
+        radial-gradient(circle at 75% 25%, #914020 0, transparent 34%),
+        radial-gradient(circle at 25% 80%, #413121 0, transparent 40%),
+        #1a1715;
+    }
+
+    .visual::before,
+    .visual::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border: 1px solid #ef8b5299;
+      border-radius: 46px;
+      transform: rotate(25deg);
+    }
+
+    .visual::after {
+      width: 185px;
+      height: 185px;
+      border-color: #ffd1a0aa;
+      transform: rotate(48deg);
+    }
+
+    .visual-center {
+      z-index: 1;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .visual-mark {
+      display: block;
+      margin-bottom: 12px;
+      color: #ffac73;
+      font-size: 4.2rem;
+      line-height: 1;
+    }
+
+    .visual-center strong {
+      display: block;
+      font-size: 1.25rem;
+    }
+
+    .visual-center small {
+      display: block;
+      margin-top: 5px;
+      color: #e2c3ad;
+    }
+
+    .section {
+      padding-block: 85px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-intro {
+      max-width: 690px;
+      margin-bottom: 38px;
+    }
+
+    .section-intro p,
+    .card p,
+    .about-copy p,
+    .contact p {
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 225px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .card-number {
+      color: var(--accent);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .about-copy {
+      padding-left: 25px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .note {
+      margin-top: 26px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: .93rem;
+    }
+
+    .note strong { color: var(--text); }
+
+    .contact-section {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .contact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+      padding-block: 70px;
+    }
+
+    .contact p { max-width: 590px; }
+
+    .site-footer {
+      padding-block: 26px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    @media (max-width: 760px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding-block: 18px;
+      }
+
+      .hero,
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .hero { padding-block: 70px; }
+      .visual { min-height: 320px; }
+      .cards { grid-template-columns: 1fr; }
+      .card { min-height: auto; }
+      .contact { align-items: flex-start; flex-direction: column; }
+      .section { padding-block: 65px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .button { transition: none; }
+    }
   </style>
 </head>
+
 <body>
-  <h1>Prompt & AI Art Studio</h1>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#home">Prompt<span> & </span>AI Art Studio</a>
 
-  <p>
-    We are building a tool to help AI enthusiasts and software developers
-    create effective prompts and AI-generated artwork.
-  </p>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#project">The project</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-  <h2>What it does</h2>
-  <p>
-    The project aims to make it easier to work with large language models
-    (LLMs) and APIs when developing prompts and generating artwork with AI
-    models. Our goal is to help users experiment with ideas and improve
-    their creative workflow.
-  </p>
+  <main id="home">
+    <section class="hero container" aria-labelledby="hero-title">
+      <div>
+        <span class="eyebrow">Prompts · LLMs · AI artwork</span>
+        <h1 id="hero-title">Better ideas start with better prompts.</h1>
+        <p class="lead">
+          We're building a creative AI project for enthusiasts and developers
+          who want to explore effective prompts, LLM and API workflows,
+          and AI-generated artwork.
+        </p>
 
-  <h2>Current status</h2>
-  <p>
-    This is an early-stage project under development. We are working on
-    its features and exploring how best to support prompt creation and
-    AI-generated images.
-  </p>
+        <div class="hero-actions">
+          <a class="button" href="#project">Explore the project</a>
+          <a class="button outline" href="#about">Learn more</a>
+        </div>
 
-  <p>
+        <p class="status">Early-stage project · Currently under development</p>
+      </div>
 
-  <p><a href="https://github.com/smartsukesh/aitech-website">
-    View the project on GitHub
-  </a></p>
-  <p>Contact: admin@smartsukesh.dev</p>
+      <div class="visual" role="img"
+           aria-label="Abstract orange geometric artwork representing creative ideas">
+        <div class="visual-center">
+          <span class="visual-mark" aria-hidden="true">✳</span>
+          <strong>Imagine. Prompt. Create.</strong>
+          <small>A visual concept for what we're building</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="project" aria-labelledby="project-title">
+      <div class="container">
+        <div class="section-intro">
+          <span class="eyebrow">The project</span>
+          <h2 id="project-title">One idea, many creative possibilities.</h2>
+          <p>
+            We're exploring a more approachable way to move from an idea
+            to a useful prompt—and from a prompt to visual inspiration.
+          </p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <span class="card-number">01 / PROMPTS</span>
+            <h3>Develop clearer prompts</h3>
+            <p>
+              Explore ways to shape prompts for creative and
+              software-development tasks.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-number">02 / LLM WORKFLOWS</span>
+            <h3>Work with models and APIs</h3>
+            <p>
+              Investigate practical workflows involving large language
+              models and their APIs.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="card-number">03 / AI ARTWORK</span>
+            <h3>Explore visual ideas</h3>
+            <p>
+              Explore how AI image models can help turn creative
+              concepts into artwork.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+        <div>
+          <span class="eyebrow">About us</span>
+          <h2 id="about-title">Built for people who like to experiment.</h2>
+        </div>
+
+        <div class="about-copy">
+          <p>
+            Prompt & AI Art Studio is an early-stage project for AI enthusiasts
+            and software developers. Its goal is to make experimenting
+            with prompts, language models, APIs, and AI-generated imagery
+            feel more accessible.
+          </p>
+          <p>
+            We're still developing the project and deciding which ideas
+            to build first. This website introduces the direction we're
+            exploring and will evolve as the project grows.
+          </p>
+
+          <div class="note">
+            <strong>Where things stand:</strong> This is an informational
+            website, not yet an interactive prompt or image-generation tool.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact"
+             aria-labelledby="contact-title">
+      <div class="container contact">
+        <div>
+          <span class="eyebrow">Get in touch</span>
+          <h2 id="contact-title">Interested in the project?</h2>
+          <p>
+            Have an idea, question, or suggestion? We'd be glad to hear
+            from you.
+          </p>
+        </div>
+
+        <a class="button" href="mailto:admin@smartsukesh.dev">
+          Contact us
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>© 2026 Prompt & AI Art Studio</span>
+
+      <div class="footer-links">
+        <a href="https://github.com/smartsukesh/aitech-website"
+           rel="noopener noreferrer">
+          GitHub
+        </a>
+        <a href="mailto:admin@smartsukesh.dev">Email</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
