@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta name="description"
-        content="An early-stage project exploring better prompts, LLM workflows, and AI-generated artwork.">
+        content="AI ART STUDIO is an early-stage project exploring prompts, guides, LLM workflows, and AI-generated artwork.">
 
-  <title>Prompt & AI Art Studio</title>
+  <title>AI ART STUDIO | Prompts Guides & Workflows</title>
 
   <style>
     :root {
@@ -49,25 +49,35 @@
 
     .nav {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      gap: 24px;
-      min-height: 76px;
+      gap: 18px;
+      padding-block: 25px 20px;
+      text-align: center;
     }
 
     .brand {
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: -.02em;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: .06em;
       text-decoration: none;
     }
 
     .brand span { color: var(--accent); }
 
+    .header-subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      letter-spacing: .13em;
+    }
+
     .nav-links {
       display: flex;
+      justify-content: center;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: 28px;
     }
 
     .nav-links a,
@@ -332,13 +342,6 @@
     }
 
     @media (max-width: 760px) {
-      .nav {
-        align-items: flex-start;
-        flex-direction: column;
-        justify-content: center;
-        padding-block: 18px;
-      }
-
       .hero,
       .about-grid {
         grid-template-columns: 1fr;
@@ -363,7 +366,10 @@
 <body>
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="#home">Prompt<span> & </span>AI Art Studio</a>
+      <div>
+        <a class="brand" href="#home">AI <span>ART</span> STUDIO</a>
+        <p class="header-subtitle">Prompts Guides &amp; Workflows</p>
+      </div>
 
       <nav class="nav-links" aria-label="Main navigation">
         <a href="#project">The project</a>
@@ -453,7 +459,7 @@
 
         <div class="about-copy">
           <p>
-            Prompt & AI Art Studio is an early-stage project for AI enthusiasts
+            AI ART STUDIO is an early-stage project for AI enthusiasts
             and software developers. Its goal is to make experimenting
             with prompts, language models, APIs, and AI-generated imagery
             feel more accessible.
@@ -493,7 +499,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span>© 2026 Prompt & AI Art Studio</span>
+      <span>© 2026 Developed by SmartSukesh (AI Tamil Tech)</span>
 
       <div class="footer-links">
         <a href="https://github.com/smartsukesh/aitech-website"
